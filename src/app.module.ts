@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { AuthRequest, User, Nft, NftProperty } from './entities';
+import { AuthRequest, User, Nft, NftProperty, Order } from './entities';
 import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
 import { MintingController } from './minting/minting.controller';
@@ -15,6 +15,8 @@ import { NftService } from './nft/nft.service';
 import { HttpModule } from '@nestjs/axios';
 import { BullModule } from '@nestjs/bull';
 import { NftConsumer } from './nft/nft.consumer';
+import { OrderService } from './order/order.service';
+import { OrderController } from './order/order.controller';
 
 @Module({
   imports: [
@@ -41,12 +43,12 @@ import { NftConsumer } from './nft/nft.consumer';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DBNAME'),
-        entities: [AuthRequest, User, Nft, NftProperty, NftContract],
+        entities: [AuthRequest, User, Nft, NftProperty, NftContract, Order],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Nft, NftProperty, NftContract]),
+    TypeOrmModule.forFeature([User, Nft, NftProperty, NftContract, Order]),
     AuthModule,
   ],
   controllers: [
@@ -54,7 +56,15 @@ import { NftConsumer } from './nft/nft.consumer';
     UserController,
     MintingController,
     NftController,
+    OrderController,
   ],
-  providers: [AppService, UserService, MintingService, NftService, NftConsumer],
+  providers: [
+    AppService,
+    UserService,
+    MintingService,
+    NftService,
+    NftConsumer,
+    OrderService,
+  ],
 })
 export class AppModule {}
